@@ -13,23 +13,23 @@ License: GPLv2 or later
 Text Domain: StevenWung
 */
 
-    /*
-        news:
-            /m/news/timestamp/count/new/
-            /m/news/timestamp/count/old
-        comments:
-            /m/comment/timestamp/count/new/
-            /m/comment/timestamp/count/old
-     */
-    require_once 'api_libs.php';
+/*
+    news:
+        /m/news/timestamp/count/new/
+        /m/news/timestamp/count/old
+    comments:
+        /m/comment/timestamp/count/new/
+        /m/comment/timestamp/count/old
+ */
+require_once 'api_libs.php';
 
-    global $post_routes;
+global $post_routes;
 
-    $post_routes = array(
-        '(?P<ft>[a-z]+)/(?P<timestamp>[0-9]+)/(?P<count>[0-9]+)/(?P<order>[a-z]+)' => array(
-            array( 'ft_get_posts',  1 )
-        )
-    );
+$post_routes = array(
+    '(?P<ft>[a-z]+)/(?P<timestamp>[0-9]+)/(?P<count>[0-9]+)/(?P<order>[a-z]+)' => array(
+        array( 'ft_get_posts',  1 )
+    )
+);
 
 
 function ft_get_posts($ft, $timestamp, $count, $order){
