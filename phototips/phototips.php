@@ -10,7 +10,7 @@ Version: 1.0.0
 Author: StevenWung
 Author URI: http://stevenwung.me/
 License: GPLv2 or later
-Text Domain: akismet
+Text Domain: StevenWung
 */
 
     /*
