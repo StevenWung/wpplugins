@@ -32,16 +32,23 @@ Text Domain: akismet
         ),
     );
     function ft_comment($id){
-        if($_SERVER['HTTP_METHOD'] == 'POST' ){
+        if($_SERVER['REQUEST_METHOD'] == 'POST' ){
             //post a comment to an article
-
+            ft_post_comments($id);
         }else{
             //request comments by post id
-            ft_post_comments($id);
+            //
+            ft_get_comments($id);
         }
     }
     function ft_get_comments($post_id){
-
+        $comments = get_comments( array('post_id' => $post_id) );
+        $result = array();
+        $result['name'] = 'news';
+        $result['row'] = count($comments);
+        $result['data'] = $comments;
+        echo json_encode($result);
+        die();
     }
     function ft_post_comments($post_id){
         global $header;
@@ -50,7 +57,7 @@ Text Domain: akismet
         $_POST['author'] = "STEVEN";
         $_POST['email'] = "STEVEN@a.com";
         $_POST['url'] = "";
-        $_POST['comment'] = "Shitasdfasdfsadsfasdf";
+        $_POST['comment'] = "ShitasdfasdASDFASDFSfsadsfadsfasdasdf";
         $_POST['parent'] = "";
         include ABSPATH . 'wp-comments-post.php';
     }
