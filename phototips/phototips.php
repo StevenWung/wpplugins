@@ -26,9 +26,34 @@ Text Domain: akismet
         ),
         'post/(?P<id>[0-9]+)/?' => array(
             array( 'ft_get_post',  1 )
-        )
+        ),
+        'comment/(?P<id>[0-9]+)/?' => array(
+            array( 'ft_comment',  1 )
+        ),
     );
+    function ft_comment($id){
+        if($_SERVER['HTTP_METHOD'] == 'POST' ){
+            //post a comment to an article
 
+        }else{
+            //request comments by post id
+            ft_post_comments($id);
+        }
+    }
+    function ft_get_comments($post_id){
+
+    }
+    function ft_post_comments($post_id){
+        global $header;
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['comment_post_ID'] = $post_id;;
+        $_POST['author'] = "STEVEN";
+        $_POST['email'] = "STEVEN@a.com";
+        $_POST['url'] = "";
+        $_POST['comment'] = "Shitasdfasdfsadsfasdf";
+        $_POST['parent'] = "";
+        include ABSPATH . 'wp-comments-post.php';
+    }
     function ft_get_post($id){
         global $header;
         query_posts("p=$id");
