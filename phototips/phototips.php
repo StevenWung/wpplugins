@@ -12,7 +12,9 @@ Author URI: http://stevenwung.me/
 License: GPLv2 or later
 Text Domain: akismet
 */
-
+    define("FT_COMMENT_AUTHOR_EMAIL", "comment@localhosttestserver.com");
+    define("FT_COMMENT_AUTHOR_NAME", "foto_commentor");
+    
     $header = "<style type='text/css'>img{width: 100%;}</style>";
     $header.= "<script>function loaded(){window.location = 'loaded://'; }</script><body onload='loaded();'>";
 
@@ -42,9 +44,23 @@ Text Domain: akismet
         }
     }
     function ft_get_comments($post_id){
-        $comments = get_comments( array('post_id' => $post_id) );
+        $comments = array();
+        $raw_comments = get_comments( array(
+            'post_id' => $post_id,
+            'author_email' => FT_COMMENT_AUTHOR_EMAIL
+        ));
+        foreach ($raw_comments as $raw_comment){
+            $timestr = $raw_comment->comment_date;
+            $content = $raw_comment->comment_content;
+            
+            $comment = array();
+            $comment['timestamp'] = strval(strtotime($timestr));
+            $comment['author'] = substr($content, 0, strpos($content, ':'));
+            $comment['comment'] = substr($content, strpos($content, ':') + 1 );
+            $comments[] = $comment;
+        }
         $result = array();
-        $result['name'] = 'news';
+        $result['name'] = 'comments';
         $result['row'] = count($comments);
         $result['data'] = $comments;
         echo json_encode($result);
@@ -52,13 +68,23 @@ Text Domain: akismet
     }
     function ft_post_comments($post_id){
         global $header;
+        $comment = $_POST['comment'];
+        $author = $_POST['author'];
+        if( $author == '' ){
+            $author = 'anonymous';
+        }
+        if($comment == ''){
+            return;
+        }
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST['comment_post_ID'] = $post_id;;
-        $_POST['author'] = "STEVEN";
-        $_POST['email'] = "STEVEN@a.com";
+        $_POST['author'] = FT_COMMENT_AUTHOR_NAME;
+        $_POST['email'] = FT_COMMENT_AUTHOR_EMAIL;
         $_POST['url'] = "";
-        $_POST['comment'] = "ShitasdfasdASDFASDFSfsadsfadsfasdasdf";
+        $_POST['comment'] = $author.":".$comment;
         $_POST['parent'] = "";
+        
+        
         include ABSPATH . 'wp-comments-post.php';
     }
     function ft_get_post($id){
@@ -97,7 +123,7 @@ Text Domain: akismet
             }else{
                 $header_picture = '';
             }
-
+            $comment = get_comment_count($post_id);
             $item = array();
             $item['title'] = get_the_title();
             $item['id'] = "".get_the_ID();
@@ -106,7 +132,7 @@ Text Domain: akismet
             $item['datetime'] = date('Y-m-d H:i:s', $timestamp);
             $item['summary'] = get_the_excerpt();
             $item['header_picture'] = $header_picture;
-            $item['comments'] = "".get_comment_count($post_id)['approved'];
+            $item['comments'] = "".$comment['approved'];
 
             $postList[] = $item;
 
