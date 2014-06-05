@@ -39,23 +39,31 @@ function ft_api_default_filters($server) {
 add_action('ft_serve_action', 'ft_api_default_filters', 10, 1 );
 
 function ft_api_loaded(){
+    $rq_method = $_SERVER['REQUEST_METHOD'];
     $path = $GLOBALS['wp']->query_vars['ft'];
     do_action('ft_serve_action');
     $params = apply_filters('ft_endpoints', array());
-    //var_dump($_SERVER);die();
+
 
     foreach( $params as $route => $handlers ){
         foreach($handlers as $handler){
             $callback = $handler[0];
+            $method = $handler[1];
             $match = preg_match("@".$route."$@i", $path, $args );
-            if ( !is_callable( $callback ) ){
-                continue;
-            }
-            $params = sort_callback_params($callback, $args);
 
-            if( is_array($params) ){
-                call_user_func_array( $callback, $params );
+            if( $match ){
+                if( $rq_method == $method ){
+                    if ( !is_callable( $callback ) ){
+                        continue;
+                    }
+                    $params = sort_callback_params($callback, $args);
+
+                    if( is_array($params) ){
+                        call_user_func_array( $callback, $params );
+                    }
+                }
             }
+
         }
     }
 

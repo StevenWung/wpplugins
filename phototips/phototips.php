@@ -14,7 +14,9 @@ Text Domain: akismet
 */
     define("FT_COMMENT_AUTHOR_EMAIL", "comment@localhosttestserver.com");
     define("FT_COMMENT_AUTHOR_NAME", "foto_commentor");
-    
+    define("POST", 'POST');
+    define('GET', 'GET');
+
     $header = "<style type='text/css'>img{width: 100%;}</style>";
     $header.= "<script>function loaded(){window.location = 'loaded://'; }</script><body onload='loaded();'>";
 
@@ -24,36 +26,34 @@ Text Domain: akismet
 
     $post_routes = array(
         'posts/(?P<timestamp>[0-9]+)/(?P<count>[0-9]+)/(?P<order>[a-z]+)' => array(
-            array( 'ft_get_posts',  1 )
+            array( 'ft_get_posts',  GET )
         ),
         'post/(?P<id>[0-9]+)/?' => array(
-            array( 'ft_get_post',  1 )
+            array( 'ft_get_post',  GET )
         ),
-        'comment/(?P<id>[0-9]+)/?' => array(
-            array( 'ft_comment',  1 )
+        'comment/(?P<post_id>[0-9]+)/?' => array(
+            array( 'ft_post_comments',  POST )
         ),
+        'comment/(?P<post_id>[0-9]+)/(?P<timestamp>[0-9]+)/(?P<count>[0-9]+)/?' => array(
+            array( 'ft_get_comments',  GET)
+        )
     );
-    function ft_comment($id){
-        if($_SERVER['REQUEST_METHOD'] == 'POST' ){
-            //post a comment to an article
-            ft_post_comments($id);
-        }else{
-            //request comments by post id
-            //
-            ft_get_comments($id);
-        }
-    }
-    function ft_get_comments($post_id){
+
+    function ft_get_comments( $post_id, $timestamp , $count ){
+        $real_count = 0;
         $comments = array();
         $raw_comments = get_comments( array(
             'post_id' => $post_id,
-            'author_email' => FT_COMMENT_AUTHOR_EMAIL
+            'author_email' => FT_COMMENT_AUTHOR_EMAIL,
+            'number' => $count,
+            'offset' => $timestamp,
         ));
         foreach ($raw_comments as $raw_comment){
             $timestr = $raw_comment->comment_date;
             $content = $raw_comment->comment_content;
             
             $comment = array();
+            $comment['id'] = $raw_comment->comment_ID;;
             $comment['timestamp'] = strval(strtotime($timestr));
             $comment['author'] = substr($content, 0, strpos($content, ':'));
             $comment['comment'] = substr($content, strpos($content, ':') + 1 );
@@ -62,7 +62,9 @@ Text Domain: akismet
         $result = array();
         $result['name'] = 'comments';
         $result['row'] = count($comments);
+        $result['max_timestamp'] = $count + $timestamp;
         $result['data'] = $comments;
+
         echo json_encode($result);
         die();
     }
@@ -76,6 +78,7 @@ Text Domain: akismet
         if($comment == ''){
             return;
         }
+
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST['comment_post_ID'] = $post_id;;
         $_POST['author'] = FT_COMMENT_AUTHOR_NAME;
@@ -83,8 +86,7 @@ Text Domain: akismet
         $_POST['url'] = "";
         $_POST['comment'] = $author.":".$comment;
         $_POST['parent'] = "";
-        
-        
+        $_POST['redirect_to'] = './';
         include ABSPATH . 'wp-comments-post.php';
     }
     function ft_get_post($id){
