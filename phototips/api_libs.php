@@ -118,3 +118,27 @@ function posts($where, $count){
 function comments($where, $count){
 
 }
+function check_token(){
+    $timezone = date_default_timezone_get();
+    date_default_timezone_set('PRC');
+    $timestamp = time();
+    $ymd = date('YmdH', $timestamp);
+    $i = intval(intval(date("i", $timestamp)) / 3);
+    date_default_timezone_set($timezone);
+    $temp = "$ymd$i";
+    $server_tok = md5($temp);
+    $remote_tok = $_POST['token'];
+    if( $remote_tok == $server_tok ){
+        return true;
+    }
+    return false;
+}
+function post_error($code, $msg){
+    $result = array();
+    $result['success'] = 'false';
+    $result['code'] = $code;
+    $result['message'] = $msg;
+    $tmp = json_encode($result);
+    echo $tmp;
+    die();
+}

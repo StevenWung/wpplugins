@@ -1,21 +1,24 @@
 <?php
-/**
- * @package Phototips
- */
-/*
-Plugin Name: Phototips
-Plugin URI: http://stevenwung.me/
-Description: For Personal Use
-Version: 1.0.0
-Author: StevenWung
-Author URI: http://stevenwung.me/
-License: GPLv2 or later
-Text Domain: akismet
-*/
+    /**
+     * @package Phototips
+     */
+    /*
+    Plugin Name: Phototips
+    Plugin URI: http://stevenwung.me/
+    Description: For Personal Use
+    Version: 1.0.0
+    Author: StevenWung
+    Author URI: http://stevenwung.me/
+    License: GPLv2 or later
+    Text Domain: akismet
+    */
+
     define("FT_COMMENT_AUTHOR_EMAIL", "comment@localhosttestserver.com");
     define("FT_COMMENT_AUTHOR_NAME", "foto_commentor");
     define("POST", 'POST');
     define('GET', 'GET');
+    
+    define("ERROR_CODE_NO_TOKEN", 0);
 
     $header = "<style type='text/css'>img{width: 100%;}</style>";
     $header.= "<script>function loaded(){window.location = 'loaded://'; }</script><body onload='loaded();'>";
@@ -53,13 +56,15 @@ Text Domain: akismet
             $content = $raw_comment->comment_content;
             
             $comment = array();
-            $comment['id'] = $raw_comment->comment_ID;;
+            $comment['id'] = $raw_comment->comment_ID;
+            $comment['date'] = date('Y-m-d', strtotime($timestr));
             $comment['timestamp'] = strval(strtotime($timestr));
             $comment['author'] = substr($content, 0, strpos($content, ':'));
             $comment['comment'] = substr($content, strpos($content, ':') + 1 );
             $comments[] = $comment;
         }
         $result = array();
+        $result['success'] = 'true';
         $result['name'] = 'comments';
         $result['row'] = count($comments);
         $result['max_timestamp'] = $timestamp + count($raw_comments);
@@ -69,6 +74,9 @@ Text Domain: akismet
         die();
     }
     function ft_post_comments($post_id){
+        if( !check_token() ){
+            post_error(ERROR_CODE_NO_TOKEN, "token is not right");
+        }
         global $header;
         $comment = $_POST['comment'];
         $author = $_POST['author'];
@@ -147,6 +155,7 @@ Text Domain: akismet
         endwhile;
 
         $result = array();
+        $result['success'] = 'true';
         $result['name'] = 'posts';
         $result['row'] = count($postList);
         $result['max_timestamp'] = $maxTimestamp;
