@@ -62,7 +62,7 @@ Text Domain: akismet
         $result = array();
         $result['name'] = 'comments';
         $result['row'] = count($comments);
-        $result['max_timestamp'] = $count + $timestamp;
+        $result['max_timestamp'] = $timestamp + count($raw_comments);
         $result['data'] = $comments;
 
         echo json_encode($result);
@@ -147,7 +147,7 @@ Text Domain: akismet
         endwhile;
 
         $result = array();
-        $result['name'] = 'news';
+        $result['name'] = 'posts';
         $result['row'] = count($postList);
         $result['max_timestamp'] = $maxTimestamp;
         $result['min_timestamp'] = $minTimestamp;;
