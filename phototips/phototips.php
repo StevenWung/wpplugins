@@ -51,14 +51,15 @@
             'number' => $count,
             'offset' => $timestamp,
         ));
-        foreach ($raw_comments as $raw_comment){
+        foreach ($raw_comments as $k=> $raw_comment){
             $timestr = $raw_comment->comment_date;
             $content = $raw_comment->comment_content;
             
             $comment = array();
             $comment['id'] = $raw_comment->comment_ID;
             $comment['date'] = date('Y-m-d', strtotime($timestr));
-            $comment['timestamp'] = strval(strtotime($timestr));
+            //$comment['timestamp'] = strval(strtotime($timestr));
+            $comment['timestamp'] = strval($k + 1);
             $comment['author'] = substr($content, 0, strpos($content, ':'));
             $comment['comment'] = substr($content, strpos($content, ':') + 1 );
             $comments[] = $comment;
