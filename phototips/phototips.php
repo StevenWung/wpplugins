@@ -25,7 +25,8 @@
     			.ft-body{font-size:16px;padding-top:2px;} 
     			h2,p,strong{font-size:16px;font-weight:normal!important;}
     			img{margin:2px 0px;}
-    			
+    			a{text-decoration:none;color:black;}
+                .comment{background:#ccc;-webkit-border-radius: 3px;padding:0px 5px;}
     		   </style>";
 	$header.= "<script src='m/file/jquery.js'></script>
 			   <script src='m/file/jquery.lazyload.js'></script>";
@@ -173,15 +174,17 @@
         global $header;
         query_posts("p=$id");
         the_post();
+        $comments = get_comment_count($id);
+        $comment_count = count($comments);
         $post = get_the_content();
         $post = str_replace('src=',  "src='m/file/grey.gif' data-original=", $post);
         //die($post);
         
         $content = $header;
         $content.= "<div style='font-size:18px;font-weight:bold;border-bottom:#ccc 1px dashed;padding:8px 0px'>".get_the_title()."</div>";
-		$content.= "<div style='padding-top:5px;'>";
-		$content.= "	<div style='width:100px;height:20px;display:inline-block;float:left;'>2011-12-22</div>";
-		$content.= "	<div style='width:100px;height:20px;display:inline-block;float:left;'><a href='comment:/'>100 comments</a></div>";
+		$content.= "<div style='padding-top:5px;margin-bottom:6px;'>";
+		$content.= "	<div style='height:20px;display:inline-block;float:left;' class='comment'>2011-12-22</div>";
+		$content.= "	<div style='height:20px;display:inline-block;float:right;' class='comment'><a href='comment:/'>$comment_count comments</a></div>";
 		$content.= "</div>";
 		$content.= "<div style='clear:both'></div>";		
 		$content.= "<div class='ft-body'>";		
