@@ -127,7 +127,7 @@
             $item.= "			<span style='display:inline-block;'>$author</span>";
             $item.= "			<span style='display:inline-block;float:right;padding-right:5px;'>$date</span>";
             $item.= "		</div>";
-            $item.= "		<div style='padding:7px 0 7px 0'>$content</div>";
+            $item.= "		<div style='padding:7px 0 7px 0;font-size:14px;'>$content</div>";
             $item.= "	</div>";
             /*
             $comment = array();
@@ -175,14 +175,16 @@
         query_posts("p=$id");
         the_post();
         $comments = get_comment_count($id);
-        $comment_count = count($comments);
+        //var_dump($comments);die();
+        //$comment_count = count($comments);
+        $comment_count = $comments['total_comments'];
         $post = get_the_content();
         $post = str_replace('src=',  "src='m/file/grey.gif' data-original=", $post);
         //die($post);
         
         $content = $header;
         $content.= "<div style='font-size:18px;font-weight:bold;border-bottom:#ccc 1px dashed;padding:8px 0px'>".get_the_title()."</div>";
-		$content.= "<div style='padding-top:5px;margin-bottom:6px;'>";
+		$content.= "<div style='padding-top:10px;margin-bottom:6px;'>";
 		$content.= "	<div style='height:20px;display:inline-block;float:left;' class='comment'>2011-12-22</div>";
 		$content.= "	<div style='height:20px;display:inline-block;float:right;' class='comment'><a href='comment:/'>$comment_count comments</a></div>";
 		$content.= "</div>";
@@ -196,8 +198,12 @@
     }
 
     function ft_get_posts($timestamp, $count, $order){
-        $compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 60) ;;
 
+        if( $order == 'new' )
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 60) ;
+        else
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 60) ;
+        
         $postList = array();
         $maxTimestamp = 0;
         $minTimestamp = time() + 100000;;
