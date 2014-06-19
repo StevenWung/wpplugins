@@ -95,6 +95,8 @@
             $item['title'] = $val['alttext'];
             $item['desc'] = $val['description'];
             $item['date'] = $val['imagedate'];
+            $item['width'] = $val['width'];
+            $item['height'] = $val['height'];
             $item['timestamp'] = $tim;
             $data[] = $item;
             

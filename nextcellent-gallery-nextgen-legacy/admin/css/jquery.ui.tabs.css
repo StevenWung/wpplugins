@@ -1,0 +1,64 @@
+/* Caution! Ensure accessibility in print and other media types... */
+@media projection, screen { /* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
+    .ui-tabs-hide {
+        display: none;
+    }
+}
+
+/* Hide useless elements in print layouts... */
+@media print {
+    .ui-tabs-nav {
+        display: none;
+    }
+}
+
+/* Skin */
+#slider  ul.ui-tabs-nav {
+	height: 33px;
+	border-bottom: 1px solid #CCCCCC;
+	padding: 9px 15px 0 10px;
+}
+
+#slider ul.ui-tabs-nav li {
+	float: left;
+	margin: 0 6px 0 0;
+}
+
+#slider ul.ui-tabs-nav li.ui-tabs-active a {
+	color: #000;
+	background: 0 0;
+	border-color: #ccc;
+	border-bottom-color: #f1f1f1;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-width: 1px;
+}
+
+#slider ul.ui-tabs-nav li.ui-tabs-active a:hover {
+	color: #000;
+	background: 0 0;
+	border-color: #ccc;
+	border-bottom-color: #f1f1f1;
+}
+
+#slider ul.ui-tabs-nav li a {
+	padding: 6px 10px;
+	font-weight: 700;
+	font-size: 15px;
+	line-height: 24px;
+	color: #555;
+	border-color: #ccc;
+	background: #e4e4e4;
+}
+#slider ul.ui-tabs-nav li a:hover{
+	background-color: #fff;
+	color: #464646;
+}
+
+/* Additional IE specific bug fixes... */
+* html .ui-tabs-nav { /* auto clear, @ IE 6 & IE 7 Quirks Mode */
+    display: inline-block;
+}
+*:first-child+html .ui-tabs-nav  { /* @ IE 7 Standards Mode - do not group selectors, otherwise IE 6 will ignore complete rule (because of the unknown + combinator)... */
+    display: inline-block;
+}
