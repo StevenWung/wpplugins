@@ -10,7 +10,7 @@
     Author: StevenWung
     Author URI: http://stevenwung.me/
     License: GPLv2 or later
-    Text Domain: akismet
+    Text Domain: PhotoTips
     */
 
     define("FT_COMMENT_AUTHOR_EMAIL", "comment@localhosttestserver.com");
