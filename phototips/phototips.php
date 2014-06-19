@@ -62,8 +62,44 @@
         'file/(?P<file>.*)' => array(
             array( 'ft_get_file',  GET)
         ),
+        'gallery/(?P<timestamp>[0-9]+)/(?P<count>[0-9]+)/(?P<order>[a-z]+)/?' => array(
+            array( 'ft_get_gallery',  GET)
+        ),
+        
          
     );
+    
+    function ft_get_gallery($timestamp, $count=10, $order='new'){
+        
+        if( $order == 'new' ){
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 60) ;
+            $sql = "SELECT * FROM wp_ngg_pictures WHERE imagedate > '$compare_timestamp'";
+        }
+        else{
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 60) ;
+            $sql = "SELECT * FROM wp_ngg_pictures WHERE imagedate < '$compare_timestamp'";
+        }
+        
+        
+        
+        global $wpdb;
+        $ret = array();
+        $results = $wpdb->get_results("$sql limit $count", ARRAY_A );    
+        foreach($results as $key => $val){
+            $item = array();
+            $item['id'] = $val['pid'];
+            $item['file'] = $val['filename'];
+            $item['title'] = $val['alttext'];
+            $item['desc'] = $val['description'];
+            $item['date'] = $val['imagedate'];
+            $item['timestamp'] = strtotime($val['imagedate']);
+            $ret[] = $item;
+        }
+        echo json_encode($ret);
+        die();
+    }
+
+
     function ft_get_file($file){
     	$cpath = realpath( dirname(__FILE__) );
     	//header('Content-Type: application/x-javascript');
