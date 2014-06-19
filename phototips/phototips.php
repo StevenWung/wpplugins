@@ -99,7 +99,7 @@
             $item['height'] = $val['height'];
             $item['timestamp'] = $tim;
             $data[] = $item;
-            
+
             if( $tim > $maxTimestamp ){
                 $maxTimestamp = $tim;
             }

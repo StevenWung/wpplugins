@@ -613,7 +613,7 @@ class nggdb {
 
 		// Add the image
 		if ( false === $wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->nggpictures (image_slug, galleryid, filename, description, alttext, meta_data, post_id, imagedate, exclude, sortorder, width, height)
-													 VALUES (%s, %d, %s, %s, %s, %s, %d, %s, %d, %d, '%d','%d')", $slug, $id, $filename, $description, $alttext, $meta_data, $post_id, $imagedate, $exclude, $sortorder, $width, $height ) ) ) {
+													 VALUES (%s, %d, %s, %s, %s, %s, %d, %s, %d, %d, %d,%d)", $slug, $id, $filename, $description, $alttext, $meta_data, $post_id, $imagedate, $exclude, $sortorder, $width, $height ) ) ) {
 			return false;
 		}
 
