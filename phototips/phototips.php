@@ -70,32 +70,50 @@
     );
     
     function ft_get_gallery($timestamp, $count=10, $order='new'){
-        
+        $home = get_home_url();
         if( $order == 'new' ){
-            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 60) ;
-            $sql = "SELECT * FROM wp_ngg_pictures WHERE imagedate > '$compare_timestamp'";
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 10) ;
+            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate > '$compare_timestamp'";
         }
         else{
-            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 60) ;
-            $sql = "SELECT * FROM wp_ngg_pictures WHERE imagedate < '$compare_timestamp'";
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 10) ;
+            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate < '$compare_timestamp'";
         }
         
         
         
         global $wpdb;
-        $ret = array();
+        $data = array();
         $results = $wpdb->get_results("$sql limit $count", ARRAY_A );    
+        $maxTimestamp = 0;
+        $minTimestamp = time() + 100000;;
         foreach($results as $key => $val){
+            $tim = strtotime($val['imagedate']);;
             $item = array();
             $item['id'] = $val['pid'];
-            $item['file'] = $val['filename'];
+            $item['file'] = $home ."/". $val['path'] ."/". $val['filename'];
             $item['title'] = $val['alttext'];
             $item['desc'] = $val['description'];
             $item['date'] = $val['imagedate'];
-            $item['timestamp'] = strtotime($val['imagedate']);
-            $ret[] = $item;
+            $item['timestamp'] = $tim;
+            $data[] = $item;
+            
+            if( $tim > $maxTimestamp ){
+                $maxTimestamp = $tim;
+            }
+            if( $tim < $minTimestamp  ){
+                $minTimestamp = $tim;
+            }
         }
-        echo json_encode($ret);
+        $result = array();
+        $result['success'] = 'true';
+        $result['name'] = 'gallery';
+        $result['max_timestamp'] = $maxTimestamp;
+        $result['min_timestamp'] = $minTimestamp;
+        $result['row'] = count($data);
+        $result['data'] = $data;
+        
+        echo json_encode($result);
         die();
     }
 
