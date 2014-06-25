@@ -3,6 +3,18 @@
 /*
  *  reg entrance
  */
+
+
+function ft_install_hook(){
+    file_put_contents("/Users/stevenwang/Desktop/txt.txt", "sadfasdfad");
+    die();
+}
+
+register_activation_hook( __FILE__, 'ft_install_hook' );
+
+
+
+
 function ft_api_url_write_rules() {
     add_rewrite_rule( '^m/(.*)/?','index.php?ft=$matches[1]','top' );
     global $wp;

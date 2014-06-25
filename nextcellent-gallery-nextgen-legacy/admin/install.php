@@ -9,6 +9,8 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('You 
  * @return void
  */
 function nggallery_install () {
+    
+    
 
    	global $wpdb;
 
@@ -70,6 +72,19 @@ function nggallery_install () {
 	KEY post_id (post_id)
 	) $charset_collate;";
 	dbDelta($sql);
+        
+        
+        $sql = "CREATE TABLE wp_ngg_comment (
+        cid BIGINT(20) NOT NULL AUTO_INCREMENT ,
+        picture_id BIGINT(20) NOT NULL,
+        parent_id BIGINT(20) NOT NULL,
+        author VARCHAR(255)  ,
+        title VARCHAR(255)  ,
+        comment VARCHAR(1024)  ,
+        date DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        PRIMARY KEY  (cid)
+        )";
+        dbDelta($sql);
 
 	// Create gallery table
 	$sql = "CREATE TABLE " . $nggallery . " (
