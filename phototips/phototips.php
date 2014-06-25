@@ -65,9 +65,87 @@
         'gallery/(?P<timestamp>[0-9]+)/(?P<count>[0-9]+)/(?P<order>[a-z]+)/?' => array(
             array( 'ft_get_gallery',  GET)
         ),
-        
+        'gallery/comment/(?P<pid>[0-9]+)/(?P<timestamp>[0-9]+)/(?P<count>[0-9]+)/(?P<order>[a-z]+)/?' => array(
+            array( 'ft_get_gallery_comment',  GET)
+        ),
+        'gallery/comment/(?P<pid>[0-9]+)/?' => array(
+            array( 'ft_post_gallery_comment',  POST)
+        ),
          
     );
+    
+    function ft_get_gallery_comment($pid, $timestamp, $count=10, $order='new'){
+        $home = get_home_url();
+        if( $order == 'new' ){
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 10) ;
+            $sql = "SELECT * FROM wp_ngg_comment c left join wp_ngg_pictures p on c.picture_id = p.pid WHERE pid = $pid and date > '$compare_timestamp'";
+        }
+        else{
+            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 10) ;
+            $sql = "SELECT * FROM wp_ngg_comment c left join wp_ngg_pictures p on c.picture_id = p.pid WHERE pid = $pid and date < '$compare_timestamp'";
+        }
+        
+        
+        
+        
+        global $wpdb;
+        $data = array();
+        $results = $wpdb->get_results("$sql limit $count", ARRAY_A );    
+        $maxTimestamp = 0;
+        $minTimestamp = time() + 100000;;
+        foreach($results as $key => $val){
+            $tim = strtotime($val['imagedate']);;
+            $item = array();
+            $item['id'] = $val['cid'];
+            $item['author'] = $val['author'];
+            $item['title'] = $val['title'];
+            $item['comment'] = $val['comment'];
+            $item['width'] = $val['width'];
+            $item['height'] = $val['height'];
+            $item['timestamp'] = $tim;
+            $data[] = $item;
+
+            if( $tim > $maxTimestamp ){
+                $maxTimestamp = $tim;
+            }
+            if( $tim < $minTimestamp  ){
+                $minTimestamp = $tim;
+            }
+        }
+        $result = array();
+        $result['success'] = 'true';
+        $result['name'] = 'gallery_comment';
+        $result['max_timestamp'] = $maxTimestamp;
+        $result['min_timestamp'] = $minTimestamp;
+        $result['row'] = count($data);
+        $result['data'] = $data;
+        
+        echo json_encode($result);
+        die();
+    }
+    function ft_post_gallery_comment($pid){
+        global $wpdb;
+        $parent_id = 0;
+        $author = '';
+        $title = '';
+        $comment = $_POST['comment'];
+        $title = $_POST['title'];
+        $author = $_POST['author'];
+        $date = date('Y-m-d H:i:s', time());
+        $sql = "INSERT INTO wp_ngg_comment(picture_id, parent_id, author, title, comment ,date) VALUES(
+                $pid, 
+                $parent_id, 
+                '$author',
+                '$title',
+                '$comment', 
+                '$date'
+                )";
+         
+        $results = $wpdb->query($sql);
+        echo $results;
+        die();
+                
+    }
     
     function ft_get_gallery($timestamp, $count=10, $order='new'){
         $home = get_home_url();
