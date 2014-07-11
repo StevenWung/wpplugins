@@ -150,12 +150,14 @@
     function ft_get_gallery($timestamp, $count=10, $order='new'){
         $home = get_home_url();
         if( $order == 'new' ){
-            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 10) ;
-            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate > '$compare_timestamp'";
+            //$compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 10) ;
+            //$sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate > '$compare_timestamp'";
+            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE pid > '$timestamp'";
         }
         else{
-            $compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 10) ;
-            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate < '$compare_timestamp'";
+            //$compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 10) ;
+            //$sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate < '$compare_timestamp'";
+            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE pid < '$timestamp'";
         }
         
         
@@ -166,7 +168,8 @@
         $maxTimestamp = 0;
         $minTimestamp = time() + 100000;;
         foreach($results as $key => $val){
-            $tim = strtotime($val['imagedate']);;
+            //$tim = strtotime($val['imagedate']);;
+            $tim = intval($val['pid']);
             $item = array();
             $item['id'] = $val['pid'];
             $item['file'] = $home ."/". $val['path'] ."/". $val['filename'];
