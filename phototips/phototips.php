@@ -152,12 +152,12 @@
         if( $order == 'new' ){
             //$compare_timestamp =  date('Y-m-d H:i:s', $timestamp + 10) ;
             //$sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate > '$compare_timestamp'";
-            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE pid > '$timestamp'";
+            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE pid > '$timestamp' order by pid desc";
         }
         else{
             //$compare_timestamp =  date('Y-m-d H:i:s', $timestamp - 10) ;
             //$sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE imagedate < '$compare_timestamp'";
-            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE pid < '$timestamp'";
+            $sql = "SELECT * FROM wp_ngg_pictures p left join wp_ngg_gallery g on p.galleryid = g.gid WHERE pid < '$timestamp' order by pid desc";
         }
         
         
