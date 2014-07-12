@@ -71,8 +71,22 @@
         'gallery/comment/(?P<pid>[0-9]+)/?' => array(
             array( 'ft_post_gallery_comment',  POST)
         ),
+        'feedback/?' => array(
+            array( 'ft_post_feedback',  POST)
+        ),
          
     );
+    
+    function ft_post_feedback(){
+        $email = $_POST['email'];
+        $content = $_POST['content'];
+        $date = date('Y-m-d H:i:s', time());
+        $sql = "insert into wp_phototips_feedback(email, content, date) values('$email', '$content', '$date');";
+        global $wpdb; 
+        $ret = $wpdb->query($sql);
+        echo $ret;
+        die();
+    }
     
     function ft_get_gallery_comment($pid, $timestamp, $count=10, $order='new'){
         $home = get_home_url();

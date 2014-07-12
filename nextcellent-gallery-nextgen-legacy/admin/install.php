@@ -85,6 +85,22 @@ function nggallery_install () {
         PRIMARY KEY  (cid)
         )";
         dbDelta($sql);
+        
+        
+        
+        //feedback
+        $sql = "CREATE TABLE wp_phototips_feedback (
+        id BIGINT(20) NOT NULL AUTO_INCREMENT ,
+        email VARCHAR(255)  ,
+        content TEXT,
+        date DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        PRIMARY KEY  (id)
+        )";
+        dbDelta($sql);
+        
+        
+        
+        
 
 	// Create gallery table
 	$sql = "CREATE TABLE " . $nggallery . " (
