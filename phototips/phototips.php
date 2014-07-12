@@ -74,7 +74,7 @@
         'feedback/?' => array(
             array( 'ft_post_feedback',  POST)
         ),
-        'feedback/?' => array(
+        'feedback/admin/?' => array(
             array( 'ft_get_feedback',  GET)
         ),
          
