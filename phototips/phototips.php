@@ -74,9 +74,18 @@
         'feedback/?' => array(
             array( 'ft_post_feedback',  POST)
         ),
+        'feedback/?' => array(
+            array( 'ft_get_feedback',  GET)
+        ),
          
     );
-    
+    function ft_get_feedback(){
+        $sql = "select * from wp_phototips_feedback";
+        global $wpdb; 
+        $ret = $wpdb->get_results($sql, ARRAY_A);
+        echo json_encode($ret);
+        die();
+    }
     function ft_post_feedback(){
         $email = $_POST['email'];
         $content = $_POST['content'];
